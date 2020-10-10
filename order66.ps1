@@ -90,6 +90,10 @@ function deploy_box {
     Write-Host $global:dstore
     Write-Host $global:folder
 
+    $nameit = Read-Host -Prompt "What would you like to name this clone?"
+    #Test Deploy
+    $newvm = New-VM -Name $nameit -VM $global:basevm -LinkedClone -ReferenceSnapshot $global:snapshot -VMHost $global:vmhost -Datastore $global:dstore -Location $global:folder
+    
     }
 
 #------------------------------------------------------------------------------
@@ -150,12 +154,19 @@ function define_variables {
 #vm_parent function
 function vm_parent {
 
-    #Clear screen
+    #Run this twice intitially so it loads properly when time for decision
+    Get-VM -Location "BASE-VMS" | Get-Snapshot | select VM, Name
+    Get-VM -Location "BASE-VMS" | Get-Snapshot | select VM, Name
+
+    #clean it up
     cls_sleep
 
     # Define the $basevm and $snapshot variables
+    Write-Host "BASE-VM                        Snapshot"
     Write-Host "---------------------------------------" -ForegroundColor Cyan
     Get-VM -Location "BASE-VMS" | Get-Snapshot | select VM, Name
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
+
     $global:basevm = Read-Host -Prompt "Which BASE-VM would you like to clone from?"
     $global:snapshot = Read-Host -Prompt "Type the name of the base snapshot printed above"
 
@@ -171,20 +182,21 @@ function server_details {
     cls_sleep
 
     #Define the $vmhost, $dstore, and $folder
-    Write-Host "---------------------------------------" -ForegroundColor Cyan
-    
     Get-VMHost #print the VMHost
-    $global:vmhost = Read-Host -Prompt "Confirm the address of the vSphere server this clone will be deployed on."
+    sleep 1 #load time
+    $global:vmhost = Read-Host -Prompt "Type the 'Name' of the VMware server"
     
-    Get-Datastore #print the datastore option(s)
-    $global:dstore = Read-Host -Prompt "Which datastore do you want the clone stored on?"
+    Get-Datastore | Select Name #print the datastore option(s)
+    sleep 1 #load time
+    $global:dstore = Read-Host -Prompt "Type the 'Name' of the intended datastore"
     
     Get-Folder -type VM | select Name
+    sleep 1 #load time
     $global:folder = Read-Host -Prompt "Which folder should contain this clone?"
 
     #Confirmation
     Write-Host "Variables set!"
-    sleep 1
+    sleep 2
 
     # Return to define_variables
     define_variables
