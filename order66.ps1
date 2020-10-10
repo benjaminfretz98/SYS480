@@ -8,7 +8,7 @@ $global:snapshot = $null
 $global:vmhost = $null
 $global:dstore = $null
 $global:folder = $null
-
+$global:viserver = $null
 #Define the main menu function
 function main_menu {
 
@@ -16,8 +16,8 @@ function main_menu {
 
     #Create Menu
     option_statement
-    Write-Host "[1] Deploy Box"
-    Write-Host "[2] Define Variables"
+    Write-Host "[1] Deploy Clone"
+    Write-Host "[2] Set Clone Variables"
     Write-Host "[E] Exit"
     
     # Prompt the user
@@ -92,7 +92,7 @@ function deploy_box {
 
     $nameit = Read-Host -Prompt "What would you like to name this clone?"
     #Test Deploy
-    $newvm = New-VM -Name $nameit -VM $global:basevm -LinkedClone -ReferenceSnapshot $global:snapshot -VMHost $global:vmhost -Datastore $global:dstore -Location $global:folder
+    $newvm = New-VM -Name $nameit -VM $global:basevm -LinkedClone -ReferenceSnapshot $global:snapshot -VMHost $global:vmhost -Datastore $global:dstore -DiskStorageFormat Thin -Location $global:folder
     
     }
 
@@ -153,21 +153,30 @@ function define_variables {
 #------------------------------------------------------------------------------
 #vm_parent function
 function vm_parent {
-
-    #Run this twice intitially so it loads properly when time for decision
-    Get-VM -Location "BASE-VMS" | Get-Snapshot | select VM, Name
-    Get-VM -Location "BASE-VMS" | Get-Snapshot | select VM, Name
-
+    
+    $counter = 0 #used to keep track through printing collect1 array
+    #variable population
+    $collect1 = Get-VM -Name "*.base.f20"
+    
     #clean it up
     cls_sleep
-
-    # Define the $basevm and $snapshot variables
-    Write-Host "BASE-VM                        Snapshot"
     Write-Host "---------------------------------------" -ForegroundColor Cyan
-    Get-VM -Location "BASE-VMS" | Get-Snapshot | select VM, Name
-    Write-Host "---------------------------------------" -ForegroundColor Cyan
+    Write-Host "BASE-VM" -ForegroundColor Yellow
+    foreach ($name in $collect1) {
+        write-host $collect1[$counter]
+        $counter+=1
+    }
 
+    # Define the $basevm variable
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
     $global:basevm = Read-Host -Prompt "Which BASE-VM would you like to clone from?"
+    
+    # Define $snapshot variable
+    $collect2 = Get-VM -Name "$global:basevm" | Get-Snapshot
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
+    Write-Host "Snapshot" -ForegroundColor Yellow
+    $collect2
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
     $global:snapshot = Read-Host -Prompt "Type the name of the base snapshot printed above"
 
     # Return to define_variables
@@ -178,28 +187,83 @@ function vm_parent {
 #vSphere server details function
 function server_details {
 
+    $gather1 = Get-VMHost
+    $gather2 = Get-Datastore | Select Name
+    $gather3 = Get-Folder -type VM | Select Name
     #clear screen
     cls_sleep
 
     #Define the $vmhost, $dstore, and $folder
-    Get-VMHost #print the VMHost
+    #Get-VMHost #print the VMHost
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
+    Write-Host "Server Name" -ForegroundColor Yellow
+    $gather1
     sleep 1 #load time
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
     $global:vmhost = Read-Host -Prompt "Type the 'Name' of the VMware server"
     
-    Get-Datastore | Select Name #print the datastore option(s)
+    #Get-Datastore | Select Name #print the datastore option(s)
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
+    Write-Host "Datastore Name" -ForegroundColor Yellow
+    $gather2
     sleep 1 #load time
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
     $global:dstore = Read-Host -Prompt "Type the 'Name' of the intended datastore"
     
-    Get-Folder -type VM | select Name
+    #Get-Folder -type VM | select Name
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
+    Write-Host "Folder Name" -ForegroundColor Yellow
+    $gather3
     sleep 1 #load time
+    Write-Host "---------------------------------------" -ForegroundColor Cyan
     $global:folder = Read-Host -Prompt "Which folder should contain this clone?"
 
     #Confirmation
-    Write-Host "Variables set!"
-    sleep 2
+    Write-Host "Variables set!" -ForegroundColor Green
+    hit_enter
 
     # Return to define_variables
     define_variables
 }
 
-main_menu
+#---------------------------------------------------
+# hit enter function
+function hit_enter {
+
+    Read-Host -prompt "Press [Enter] to continue..."
+}
+
+#---------------------------------------------------
+#Check connection
+function check_con {
+    
+    $con = $null
+    #Check if user is connected to a server
+    $con = Get-VMHost | Select Name, ConnectionState
+
+    #Decide if connected or not
+    if ($con -eq $null) {
+
+        #No connection - connect to one
+        cls
+        Write-Host -BackgroundColor Black -ForegroundColor Red "No connection to VIServer - To connect to a VI server do the following" 
+        hit_enter
+
+        # Create the connection
+        $global:viserver = Read-Host -prompt "Type in the name or address of the VI server you wish to connect to"
+        sleep 1
+        Connect-VIServer -Server $global:viserver
+        hit_enter
+        main_menu
+
+    } else {
+
+        #Display the connection and launch main menu
+        Write-Host "You're already connected to a VI server" -ForegroundColor Green
+        hit_enter
+        main_menu
+    }
+
+}
+#main_menu
+check_con
