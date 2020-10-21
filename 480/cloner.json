@@ -1,0 +1,10 @@
+{
+    "vcenter_server" : "vcenter.fretz.local",
+    "esxi_server" : "super4.cyber.local",
+    "base_folder" : "BASE-VMS",
+    "target_folder" : "480",
+    "base_snapshot" : "Base",
+    "preferred_network" : "480-WAN",
+    "preferred_datastore" : "datastore2-super4",
+    "domain" : "fretz.local"
+}
