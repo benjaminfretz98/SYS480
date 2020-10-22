@@ -50,7 +50,7 @@ function getIp {
     )
     $vm = Get-VM -Name $vmName
     $ip = $vm.Guest.IPAddress[0]
-    Write-Host $ip hostname=$vm.Name    
+    Write-Host $ip hostname=$vm   
 }
 
 #--------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ function dynamicIp {
     $vmArray = Get-VM -Name $vmName
     foreach ($vm in $vmArray) {
         if ($vm.PowerState -eq "PoweredOn") {
-            getIp($vm.name)
+            getIp($vm)
         }
     }
 }   
