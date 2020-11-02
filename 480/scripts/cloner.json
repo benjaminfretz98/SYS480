@@ -4,7 +4,7 @@
     "base_folder" : "BASE-VMS",
     "target_folder" : "480",
     "base_snapshot" : "Base",
-    "preferred_network" : "480-WAN",
+    "preferred_network" : "Blue4-LAN",
     "preferred_datastore" : "datastore2-super4",
     "domain" : "fretz.local"
 }

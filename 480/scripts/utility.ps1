@@ -68,9 +68,41 @@ function dynamicIp {
     }
 }   
 
+#--------------------------------------------------------------------------------
+function deployVM {
+    param(
+        $cloneType,
+        $sourceVM,
+        $VMname
+    )
+    $baseVM = Get-VM -name $sourceVM
+    $snapshot = $global:parameters.base_snapshot
+    $dstore = $global:parameters.preferred_datastore
+    $vmhost = $global:parameters.esxi_server
+    $folder = $global:parameters.target_folder
+    $vnet = $global:parameters.preferred_network
+    
+    if ($cloneType -eq "L") {
+        
+        $newvm = New-VM -Name $VMname -VM $basevm -LinkedClone -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore -DiskStorageFormat Thin -Location $folder
+    
+    } elseif ($cloneType -eq "F") {
 
+        $newvm = New-VM -Name $VMname -VM $basevm -VMHost $vmhost -Datastore $dstore -DiskStorageFormat Thin -Location $folder
 
+    } else {
 
+        Write-Host "Chose either a [L]inked or [F]ull clone"
+    }
+
+    sleep 5
+    setNetwork -vmName $VMName -preferredNetwork $vnet 
+    Write-host "ok"
+    sleep 5
+    Start-VM -vm $VMname
+    Write-Host "OK"
+
+}
 
 
 
