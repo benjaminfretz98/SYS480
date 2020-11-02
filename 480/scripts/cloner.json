@@ -2,7 +2,7 @@
     "vcenter_server" : "vcenter.fretz.local",
     "esxi_server" : "super4.cyber.local",
     "base_folder" : "BASE-VMS",
-    "target_folder" : "480",
+    "target_folder" : "BLUE4",
     "base_snapshot" : "Base",
     "preferred_network" : "Blue4-LAN",
     "preferred_datastore" : "datastore2-super4",

@@ -94,16 +94,15 @@ function deployVM {
 
         Write-Host "Chose either a [L]inked or [F]ull clone"
     }
-
-    sleep 5
     setNetwork -vmName $VMName -preferredNetwork $vnet 
-    Write-host "ok"
-    sleep 5
-    Start-VM -vm $VMname
-    Write-Host "OK"
+    Write-host "Network Set"
+    $go = Start-VM -vm $VMname
+    
+    Write-Host "Powering on VM" -ForegroundColor Green
 
 }
 
+#--------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------
