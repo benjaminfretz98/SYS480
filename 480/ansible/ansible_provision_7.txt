@@ -1,0 +1,21 @@
+
+[vyos]
+10.0.17.200
+
+[centos_server]
+10.0.5.106 hostname=centos-3
+10.0.5.105 hostname=centos-2
+10.0.5.104 hostname=centos-1
+
+[ubuntu_server]
+10.0.5.108 hostname=ubuntu-2
+10.0.5.107 hostname=ubuntu-1
+
+[linux_server:children]
+centos_server
+ubuntu_server
+
+[vyos:vars]
+ansible_python_interpreter="/usr/bin/python3"
+#ansible_connection=network_cli
+#ansible_network_os=vyos
