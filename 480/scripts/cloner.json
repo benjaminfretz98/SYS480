@@ -6,5 +6,5 @@
     "base_snapshot" : "Base",
     "preferred_network" : "Blue4-LAN",
     "preferred_datastore" : "datastore2-super4",
-    "domain" : "fretz.local"
+    "domain" : "blue4.local"
 }

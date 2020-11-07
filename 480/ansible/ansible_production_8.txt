@@ -30,10 +30,6 @@ domain_controller
 centos_server
 windows_server
 
-[windows:vars]
-ansible_shell_type=powershell
-device=Ethernet0
-
 [server:vars]
 gateway=10.0.5.2
 prefix=24
@@ -57,9 +53,6 @@ device=ens160
 [centos_server:vars]
 device=ens192
 
-[linux_server:vars]
-gateway=10.0.5.2
-prefix=24
-name_server=10.0.5.2
-domain=blue4.local
-ansible_user=deployer
+[windows:vars]
+ansible_shell_type=powershell
+device=Ethernet0

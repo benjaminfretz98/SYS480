@@ -25,7 +25,7 @@ ubuntu_server
 gateway=10.0.5.2
 prefix=24
 name_server=10.0.5.2
-domain=fretz.local
+domain=blue4.local
 ansible_user=deployer
 
 [vyos:vars]
