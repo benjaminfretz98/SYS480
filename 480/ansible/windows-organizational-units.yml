@@ -1,0 +1,15 @@
+---
+- name: create-organizational-units
+  hosts: domain_controller
+  gather_facts: no
+
+  tasks:
+  - name: load from jinja template
+    win_template:
+      src: files/windows/organizational-units.ps1.j2
+      dest: C:\480\organizational-units.ps1
+  - name: run the script
+    async: 10
+    poll: 0
+    win_shell: |
+      C:\480\organizational-units.ps1
