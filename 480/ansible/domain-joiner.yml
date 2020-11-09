@@ -1,7 +1,7 @@
 ---
 # This playbook will set the necessary dns address then join an AD domain. 
 - name: domain-joiner
-  hosts: management_gui
+  hosts: windows_workstation
   gather_facts: no
   vars_prompt:
   - name: admin_name

@@ -1,0 +1,14 @@
+---
+# This playbook enables RDP on the boxes
+- name: enable-RDP  
+  hosts: windows_workstation
+  gather_facts: no
+
+  tasks:
+    - name: enable RDP
+      win_shell: |
+        Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -name "fDenyTSConnections" -value 0
+
+    - name: set firewall rule
+      win_shell: |
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"

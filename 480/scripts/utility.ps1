@@ -96,7 +96,7 @@ function deployVM {
     }
     setNetwork -vmName $VMName -preferredNetwork $vnet 
     Write-host "Network Set"
-    #$go = Start-VM -vm $VMname
+    $go = Start-VM -vm $VMname
     
     Write-Host "Powering on VM" -ForegroundColor Green
 

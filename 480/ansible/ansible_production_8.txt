@@ -11,6 +11,14 @@
 device=ens192
 
 [windows_workstation]
+10.0.5.78 hostname=workstation-01
+10.0.5.79 hostname=workstation-02
+
+[windows_workstation:vars]
+name_server=10.0.5.5
+domain=blue4.local
+ou=OU=Workstations,OU=Computers,OU=blue4,DC=blue4,DC=local
+ansible_user=deployer
 
 [windows:children]
 windows_server
@@ -19,6 +27,7 @@ windows_workstation
 [windows:vars]
 ansible_shell_type=powershell
 device=Ethernet0
+
 
 [server:children]
 centos_server

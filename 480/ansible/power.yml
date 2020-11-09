@@ -1,0 +1,10 @@
+---
+# This will change the power mode of windows boxes to high performance
+- name: power.yml
+  hosts: windows_workstation
+  gather_facts: no
+
+  tasks:
+  - name: Set power mode
+    win_power_plan:
+      name: high performance
