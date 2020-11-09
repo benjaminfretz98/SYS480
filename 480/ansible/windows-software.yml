@@ -2,7 +2,7 @@
 - name: windows-software
   hosts: windows_workstation
   gather_facts: no 
-  
+
   tasks:
     - name: install software with win chocolatey
       win_chocolatey:
@@ -16,11 +16,3 @@
         - python3
         - git
         - notepadplusplus
-
-    - name: reboot after joining domain
-      when: domain_state.reboot_required
-      win_reboot:
-        connect_timeout: 15
-        post_reboot_delay: 15
-        reboot_timeout: 200
-        msg: "Server config in proecss: rebooting...."
