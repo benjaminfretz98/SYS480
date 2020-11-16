@@ -1,0 +1,65 @@
+
+[vyos]
+10.0.17.200
+
+[centos_server]
+10.0.5.13 hostname=centos-3
+10.0.5.12 hostname=centos-2
+10.0.5.11 hostname=centos-1
+
+[centos_server:vars]
+device=ens192
+
+[windows_workstation]
+10.0.5.78 hostname=workstation-01
+10.0.5.79 hostname=workstation-02
+
+[windows_workstation:vars]
+name_server=10.0.5.5
+domain=blue4.local
+ou=OU=Workstations,OU=Computers,OU=blue4,DC=blue4,DC=local
+ansible_user=deployer
+
+[windows:children]
+windows_server
+windows_workstation
+
+[windows:vars]
+ansible_shell_type=powershell
+device=Ethernet0
+
+
+[server:children]
+centos_server
+windows_server
+
+[windows_server:children]
+domain_controller
+management_gui
+
+[domain_controller]
+10.0.5.5 hostname=dc-blue4
+
+[management_gui]
+10.0.5.6 hostname=neilyoung-blue4
+
+[server:vars]
+gateway=10.0.5.2
+prefix=24
+netmask=255.255.255.0
+name_server=10.0.5.5
+domain=blue4.local
+ou=OU=Servers,OU=Computers,OU=blue4,DC=blue4,DC=local
+ansible_user=deployer
+domainadmin_location=OU=Accounts,OU=blue4,DC=blue4,DC=local
+domaingroup_location=OU=Groups,OU=Accounts,OU=blue4,DC=blue4,DC=local
+domain_users_csv_path=~/SYS480/480/ansible/files/test-users-with-PASSWORDS.csv
+
+[vyos:vars]
+ansible_user=vyos
+ansible_python_interpreter="/usr/bin/python3"
+ansible_connection=network_cli
+ansible_network_os=vyos
+shared_network_name="BLUE4"
+dhcp_subnet=10.0.5.0/24
+static_map_name="neilyoung-blue4"

@@ -1,0 +1,50 @@
+---
+# This playbook will create a named domain administrator account plus security groups.
+# The new security groups are then populated with users created with randomly generated passwords.
+
+- name: Grab to-be domain administrator account name and password
+  hosts: domain_controller
+  vars_prompt:
+    - name: domainadmin
+      prompt: What will you name the new domain administrator?
+      private: no
+    - name: adminpassword
+      prompt: Enter in a password for this new account.
+      private: yes
+
+  tasks:
+    - name: Create new domain administrator
+      win_domain_user:
+        name: "{{ domainadmin }}"
+        password: "{{ adminpassword }}"
+        state: present
+        path: "{{ domainadmin_location }}"
+        groups:
+          - Domain Admins
+        password_never_expires: yes
+
+    - name: Create new security groups using jinja template
+      win_template:
+        src: files/windows/security-groups.ps1.j2
+        dest: C:\480\security-groups.ps1
+    - name: run the script
+      async: 10
+      poll: 0
+      win_shell: |
+        C:\480\security-groups.ps1
+
+    - name: Grab CSV file containing security groups users and passwords
+      read_csv:
+        path: "{{ domain_users_csv_path }}"
+      register: items
+      delegate_to: localhost
+
+    - name: Create the domain users
+      win_domain_user:
+        name: "{{ item.username }}"
+        password: "{{ item.password }}"
+        state: present
+        path: "{{ domaingroup_location }}"
+        groups:
+          - "{{ item.group }}"
+      with_items: "{{ items.list }}"
