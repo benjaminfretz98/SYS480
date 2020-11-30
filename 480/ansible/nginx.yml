@@ -1,0 +1,17 @@
+---
+# This playbook installs and start nginx and changes fw rules
+- name: aws-ec2-nginx
+  hosts: aws
+  tasks:
+    - name: Install the latest version of NGINX
+      apt: 
+        name: nginx
+        state: latest
+      become: yes
+
+    - name: Start NGINX
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      become: yes
