@@ -3,3 +3,16 @@ ec2-18-207-226-114.compute-1.amazonaws.com
 
 [aws:vars]
 ansible_user=ubuntu
+
+[ubuntu]
+192.168.3.14
+
+[ubuntu:vars]
+ansible_user=deployer
+device=eno2
+hostname=super4
+lan_ip=192.168.3.14
+prefix=24
+gateway=192.168.3.250
+name_server=192.168.4.4
+domain=cyber.local

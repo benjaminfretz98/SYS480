@@ -2,30 +2,36 @@
 # This playbook adds the deployer public key to linux machines
 # The .ssh dir should already exist and should be set to the appropriate permissisons. 
 - name: push key
-  hosts: linux_server
+  hosts: ubuntu
   tasks:
     - name: create the .ssh dir if it is not there
       file:
-        path: /home/deployer/.ssh
+        path: /home/bfretz/.ssh
         state: directory
         mode: 0700
+      become: yes
+      
     - name: create authorized_key file
       file:
-        path: /home/deployer/.ssh/authorized_keys
+        path: /home/bfretz/.ssh/authorized_keys
         state: touch
         mode: 0644
+      become: yes
+      
     - name: copy over key block an append to authorized_keys
       blockinfile:
-        dest: /home/deployer/.ssh/authorized_keys
-        block: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDhIQaI7EO8D9aIntArKxIpKwkx/A5ybpLBUeDG9CCFBY49XHeedP6a1z1mabXutTiMuCdQ+wg/Hkb4L2E8tNaLtVAHz43niSxcXO93Lo9b/9KpzH4v271uZk9a31632Gg1qUYChOEbRgfUKLBHO/8CJ6Xm4eOlVjxyI0EFT/U9Pi71DX3/T486Szi5fB2aBh8sQuoRP3L8TGRmFTTtM6x0JPuKtd6m1aRPT5i/rm7799WAdYCxUQLBM4+S9pexGUAZyY2vzK2dkZBsOMBPCMbTD58Rji+MBHdlK6Sub4bsjhsvI31BF0o5GhSG7u1fUx/gb/APm66HzrCFkIO25zjc1yDxcpF8zFaOPKFuKJpj/21CUrksfDZPw8nNXrcn7UFnyF4c0tFaocl+4zuJbkySIb5CzkQq9SMOXEZaoia77ZVgUhWiQuhwZmlJ9eNWVQnsE+lXy8H/QA7PSGIqyryqiUxEVmaHH4+oNmTrVrxUWUrzsM75eKg6GHY/DfpNwIM= bfretz@ubuntu
+        dest: /home/bfretz/.ssh/authorized_keys
+        block: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDdjRZ0sToKGafCPLAX8vPY177L52FhmRP3OSAdMP/htitbQiwJYPgyM0J/20xIkuoeV+R6Dk6SXCmqete0wizugJYYhyIFsbbEVy9jh/AxGCFWUUVuv18sk2sXohfM4ZzMMUTNH+6EgijxPR9EhpQVjfDS+egQ1Q6Wl8rbWrIUtGoaWtAQqGQHvkminHkVjY9nK+2HJ0+6oHSS6Rniirdf4FBX7akO/1YylwGHvpBGSD0kwxpGa5e3XenCaBamT+0UTMno3bxFZIah2kc1IyGpRkslv8vU9HbFVYHp2AKEGHbrp24RrMORPKuiN65FayUToZvOuArm2GpfQ9dE13PxPa3d5oZoLB5e2NU/BhLQfw3dxK0QQLJaJadNENfLX082JogAO2UzUE23huhy3ZvBf0LPZJGQ7aOrn3OIHn1Q1ujeYTAsKv47OP77JGpUFSBFkvxrhJlaTyUtyI3AsH6tSpSOf1v8U7GyVhgrbW5H+Kv4NyWCo4J3+2YFIChAUek= bfretz@ubuntu
+      become: yes
+
     - name: create sudoers dropin file for 480
       file:
-        path: /etc/sudoers.d/480
+        path: /etc/sudoers.d/bfretz
         state: touch
         mode: 0440
       become: yes
-    - name: create deployer entry in /etc/sudoers.d/480
+    - name: create deployer entry in /etc/sudoers.d/bfretz
       blockinfile:
-        dest: /etc/sudoers.d/480
-        block: "deployer ALL=(ALL) NOPASSWD: ALL"
+        dest: /etc/sudoers.d/bfretz
+        block: "bfretz ALL=(ALL) NOPASSWD: ALL"
       become: yes

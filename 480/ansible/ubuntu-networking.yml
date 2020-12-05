@@ -1,7 +1,7 @@
 ---
 # this playbook configures blueteam ubuntu networking
 - name: ubuntu-networking
-  hosts: ubuntu_server
+  hosts: ubuntu
   tasks:
   - name: set the hostname
     hostname:
