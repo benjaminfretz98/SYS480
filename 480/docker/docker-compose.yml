@@ -1,0 +1,13 @@
+#docker container run --detach --name nginx1 --publish 8080:80 -v $(pwd)/bind-mount:/usr/share/nginx/html/ nginx
+version: '3.8'
+
+services:
+  nginx1:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    restart: always
+    volumes:
+      - type: bind
+        source: "/home/bfretz/bind-mount"
+        target: "/usr/share/nginx/html"

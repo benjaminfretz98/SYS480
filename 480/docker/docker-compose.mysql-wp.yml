@@ -1,0 +1,29 @@
+#docker container run --detach --tty --interactive --name mysql1 --network 480-wordpress --env MYSQL_ROOT_PASSWORD=grail --env MYSQL_DATABASE=wordpress --env MYSQL_USER=wordpress --env MYSQL_PASSWORD=grail mysql:5.7
+#docker container run --detach --tty --interactive --name wp1 --network 480-wordpress --publish 80:80 --env WORDPRESS_DB_HOST=mysql1:3306 --env WORDPRESS_DB_NAME=wordpress --env WORDPRESS_DB_USER=wordpress --env WORDPRESS_DB_PASSWORD=grail wordpress
+version: '3.8'
+
+services:
+  mysql1:
+    image: mysql:5.7
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: grail
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: grail
+  wp1:
+    depends_on:
+      - mysql1
+    image: wordpress:latest
+    ports:
+      - "80:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: mysql1:3306
+      WORDPRESS_DB_NAME: wordpress 
+      WORDPRESS_DB_USER: wordpress 
+      WORDPRESS_DB_PASSWORD: grail
+volumes:
+    mysql-data: {}
