@@ -1,0 +1,15 @@
+---
+# This playbook installs docker on Ubuntu
+- name: install docker
+  hosts: swarm
+  become: yes
+  tasks:
+    - name: Run docker install script
+      script: files/docker/get-docker.sh
+    - name: Run the docker compose install script
+      script: files/docker/get-compose.sh
+    - name: add the user 'ubuntu' to the docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes

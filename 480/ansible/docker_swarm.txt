@@ -1,0 +1,8 @@
+[swarm]
+ec2-34-227-143-116.compute-1.amazonaws.com lan_ip=172.31.83.228 name=swarm1
+ec2-54-234-19-62.compute-1.amazonaws.com lan_ip=172.31.82.72 name=swarm2
+ec2-3-82-154-197.compute-1.amazonaws.com lan_ip=172.31.83.51 name=swarm3
+
+[swarm:vars]
+ansible_user=ubuntu
+e=29#OY*EUtK9jYM%LJJ
